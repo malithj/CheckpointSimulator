@@ -14,11 +14,12 @@ class Simulator:
     checkpoint overhead
     """
     
-    def __init__(self, failureEventGenerator, contentionEventGenerator, system):
+    def __init__(self, failureEventGenerator, contentionEventGenerator, system, simulatorProperties):
         self.__failureEventGenerator = failureEventGenerator
         self.__contentionEventGenerator = contentionEventGenerator
         self.__computeTimeMax = system.__getJob__().__getComputeTime__()
         self.__restartTime = system.__getRestartTime__()
+        self.__simulatorProperties = simulatorProperties
         self.__simulationTime = {}
                 
     def doSimulationIteration(self, checkpointInterval):
@@ -60,7 +61,7 @@ class Simulator:
              checkpointTime += checkpointOverhead
         return [totalExecutionTime, checkpointTime, totalWastedWork, failureCount]
     
-    def doCompleteSimulation(self, start, maxHours, maxIterations = 1):
+    def doCompleteSimulation(self):
         """
         Performs the complete simulation. i.e. each minute is simulated until the maximum Hours number, 
         is reached. doSimulationIteration method is used to perform each iteration while varying 
@@ -76,6 +77,9 @@ class Simulator:
             A list containing the average value of the tuple returned by doSimulationInterval method 
             and the average simulation time
         """
+        start = self.__simulatorProperties.__getStartTime__()
+        maxHours = self.__simulatorProperties.__getEndTime__()
+        maxIterations = self.__simulatorProperties.__getIterations__()
         for i in range (start, 60 * maxHours):
                  iteration = 0
                  execTime = 0
